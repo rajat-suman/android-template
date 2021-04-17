@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Template</string>
+    <string name="session_expired">Session Expired!</string>
+    <string name="ok">Ok</string>
+    <string name="home">Home</string>
+    <string name="support">Support</string>
+    <string name="policy">Privacy Policy</string>
+    <string name="terms_condition"><![CDATA[Terms & Conditions]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="don_apos_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="let_s_sign_you_in">Let’s Sign You In</string>
+    <string name="welcome_back_you_ve_been_missed">Welcome back, you’ve been missed</string>
+    <string name="your_email">"Your Email or Phone number"</string>
+    <string name="password">Password</string>
+    <string name="signin">Sign In</string>
+    <string name="or">OR</string>
+    <string name="profile">Profile</string>
+    <string name="bookings">Bookings</string>
+    <string name="earnings">Earnings</string>
+    <string name="notifications">Notifications</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="logout">Logout</string>
+    <string name="exit_message">Are you sure, You want to exit?</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_your_sure_want_to_logout">Are you sure, You want to Logout?</string>
+    <string name="change_password">Change Password</string>
+    <string name="some_error_occured">Some error occurred!</string>
+    <string name="your_device_offline">You are offline.</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="logged_in_successfully">Logged in successfully.</string>
+    <string name="enter_email_or_phone">Please enter email adress</string>
+    <string name="enter_valid_email_or_password">Please enter valid email address</string>
+</resources>

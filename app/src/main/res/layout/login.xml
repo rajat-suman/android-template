@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.template.views.login.LoginVM" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_login"
+                app:layout_constraintBottom_toTopOf="@id/gdLoginOne"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gdLoginOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent=".35" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvLetsSignIn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:fontFamily="@font/poppins_bold"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="10sp"
+                android:text="@string/let_s_sign_you_in"
+                android:textColor="@color/_212121"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gdLoginOne" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.02"
+                android:text="@string/welcome_back_you_ve_been_missed"
+                android:textColor="@color/_b4b3b3"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/etEmail"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/tvLetsSignIn" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@android:color/transparent"
+                android:backgroundTint="@color/white"
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:layout_constraintBottom_toTopOf="@id/viewOne"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/ic_mail"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="@string/your_email"
+                    android:inputType="text"
+                    android:text="@={vm.username}"
+                    android:textColor="@color/_acacac"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/viewOne"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/_8f92a1"
+                app:layout_constraintBottom_toTopOf="@id/etPassword"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/etEmail" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@android:color/transparent"
+                android:backgroundTint="@color/white"
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:layout_constraintBottom_toTopOf="@id/viewTwo"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/viewOne"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:text="@={vm.password}"
+                    android:textColor="@color/_acacac"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/viewTwo"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/_8f92a1"
+                app:layout_constraintBottom_toTopOf="@id/tvForgotPassword"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/etPassword" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="7sp"
+                android:onClick="@{vm::onClick}"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/forgot_password"
+                android:textColor="@color/_7cb0e1"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/btSignIn"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/viewTwo" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSignIn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/button_bg"
+                android:fontFamily="@font/poppins_semibold"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="7sp"
+                android:onClick="@{vm::onClick}"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/signin"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/tvOr"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/tvForgotPassword" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/or"
+                android:textColor="@color/_343434"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/llSocial"
+                app:layout_constraintEnd_toEndOf="@id/tvLetsSignIn"
+                app:layout_constraintStart_toStartOf="@id/tvLetsSignIn"
+                app:layout_constraintTop_toBottomOf="@id/btSignIn" />
+
+            <LinearLayout
+                android:id="@+id/llSocial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/tvSignup"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOr">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivGoogle"
+                    style="@style/circleImage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:background="@android:color/white"
+                    android:src="@drawable/ic_google" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    style="@style/circleImage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:background="@android:color/white"
+                    android:src="@drawable/ic_facebook" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvSignup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="7sp"
+                android:onClick="@{vm::onClick}"
+                android:text="@string/don_apos_t_have_an_account_sign_up"
+                android:textColor="#afafaf"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/llSocial" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

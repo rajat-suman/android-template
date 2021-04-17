@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.template.MainVM" />
+    </data>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/ic_drawer_background"
+        tools:openDrawer="start">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:padding="16dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="@dimen/_10sdp">
+
+            <fragment
+                android:id="@+id/fragmentMain"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_graph" />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="@dimen/_220sdp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent">
+
+                <LinearLayout
+                    android:id="@+id/drawer"
+                    android:layout_width="@dimen/_220sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/_50sdp"
+                    android:background="@android:color/transparent"
+                    android:gravity="start"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/_35sdp"
+                    app:layout_constraintBottom_toTopOf="@id/llSupport"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tvHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/home"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_home" />
+
+                    <TextView
+                        android:id="@+id/tvProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/profile"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_profile" />
+
+                    <TextView
+                        android:id="@+id/tvBookings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/bookings"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_bookings" />
+
+                    <TextView
+                        android:id="@+id/tvEarnings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/earnings"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_earnings" />
+
+                    <TextView
+                        android:id="@+id/tvNotifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/notifications"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_notification" />
+
+                    <TextView
+                        android:id="@+id/tvChangePassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/change_password"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_notification" />
+
+
+                    <TextView
+                        android:id="@+id/tvContactUs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/contact_us"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_contact_us" />
+
+                    <TextView
+                        android:id="@+id/tvLogout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:drawablePadding="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/logout"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_logout" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llSupport"
+                    android:layout_width="@dimen/_220sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_55sdp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/_35sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/drawer">
+
+                    <TextView
+                        android:id="@+id/tvSupport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{vm::onClick}"
+                        android:text="@string/support"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvContacts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="@string/terms_condition"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvPolicy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="@string/policy"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</layout>
