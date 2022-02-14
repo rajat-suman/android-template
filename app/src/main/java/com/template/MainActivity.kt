@@ -22,7 +22,8 @@ import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.template.databinding.ActivityMainBinding
-import com.template.interfaces.NavigationListener
+import com.template.utils.NavigationListener
+import com.template.utils.showConfirmDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.ref.WeakReference
 
@@ -40,6 +41,16 @@ class MainActivity : AppCompatActivity(), NavigationListener {
 
     override fun onStart() {
         super.onStart()
+        context = WeakReference(this)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        context = WeakReference(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
         context = WeakReference(this)
     }
 
@@ -81,7 +92,7 @@ class MainActivity : AppCompatActivity(), NavigationListener {
      * */
     @SuppressLint("RestrictedApi")
     override fun onBackPressed() {
-        if (mainVM.navController.backStack.size == 2) {
+        if (mainVM.navController.backQueue.size == 2) {
             showExit()
         } else
             super.onBackPressed()
@@ -116,20 +127,21 @@ class MainActivity : AppCompatActivity(), NavigationListener {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             1234 -> {
-                val TAG = "null"
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        Log.d(TAG, "" + "Result Ok")
+                        Log.d("MainActivity", "onActivityResult" + "Result Ok")
                         //  handle user's approval }
                     }
                     Activity.RESULT_CANCELED -> {
-                        Log.d(TAG, "" + "Result Cancelled")
+                        Log.d("MainActivity", "onActivityResult" + "Result Cancelled")
                         //  handle user's rejection  }
+                        finish()
                     }
                     ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
                         //if you want to request the update again just call checkUpdate()
-                        Log.d(TAG, "" + "Update Failure")
+                        Log.d("MainActivity", "onActivityResult" + "Update Failure")
                         //  handle update failure
+                        finish()
                     }
                 }
             }
@@ -141,11 +153,11 @@ class MainActivity : AppCompatActivity(), NavigationListener {
      *
      * */
     override fun isLockDrawer(isLock: Boolean) {
-        if (isLock) {
+        if (isLock)
             binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        } else {
+         else
             binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        }
+
     }
 
     /***
@@ -153,7 +165,6 @@ class MainActivity : AppCompatActivity(), NavigationListener {
      * */
     override fun openDrawer() {
         try {
-            Log.e("openDrawer", "ddsdsd")
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
             } else {
@@ -170,20 +181,9 @@ class MainActivity : AppCompatActivity(), NavigationListener {
     }
 
     private fun showExit() {
-        val aD = AlertDialog.Builder(this)
-        aD.setTitle(getString(R.string.exit_message))
-        aD.setCancelable(false)
-        aD.setPositiveButton(getString(R.string.ok)) { dialogInterface, i ->
-            dialogInterface.cancel()
-            dialogInterface.dismiss()
+        binding.root.showConfirmDialog(getString(R.string.exit_message)){
             finishAffinity()
         }
-        aD.setNegativeButton(getString(R.string.cancel)) { dialogInterface, i ->
-            dialogInterface.cancel()
-            dialogInterface.dismiss()
-        }
-        aD.create()
-        aD.show()
     }
 
 }

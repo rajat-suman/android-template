@@ -41,9 +41,9 @@ class Repository @Inject constructor(
             activity.showProgress()
         }
 
-        val dataResponse: Flow<Response<Any>> = flow {
+        val dataResponse: Flow<Response<T>> = flow {
             val response =
-                requestProcessor.sendRequest(retrofitApi) as Response<Any>
+                requestProcessor.sendRequest(retrofitApi)
             emit(response)
         }.flowOn(Dispatchers.IO)
 
@@ -67,10 +67,9 @@ class Repository @Inject constructor(
                     }
                     response.isSuccessful -> {
                         /**Success*/
-                        Log.d("successBody", "====${response.body()}")
                         if (saveInCache)
-                            cacheUtil.put(apiKey, response)
-                        requestProcessor.onResponse(response as Response<T>)
+                            cacheUtil.put(apiKey, response as Response<Any>)
+                        requestProcessor.onResponse(response )
                     }
                     response.code() in 300..399 -> {
                         /**Redirection*/
@@ -83,7 +82,6 @@ class Repository @Inject constructor(
                     }
                     response.code() == 401 -> {
                         /**UnAuthorized*/
-                        Log.d("errorBody", "====${response.errorBody()?.string()}")
                         getRefreshToken()
                         activity.sessionExpired()
                         requestProcessor.onError("unAuthorized")
@@ -108,27 +106,29 @@ class Repository @Inject constructor(
                     }
                     else -> {
                         /**ClientErrors*/
-                        val res = response.errorBody()!!.string()
-                        val jsonObject = JSONObject(res)
-                        when {
-                            jsonObject.has("message") -> {
-                                requestProcessor.onError(jsonObject.getString("message"))
+                            response.errorBody()?.string()?.let {res->
 
-                                if (!jsonObject.getString("message").equals("Data not found", true))
-                                    activity
-                                        .showNegativeAlerter(jsonObject.getString("message"))
+                                val jsonObject = JSONObject(res)
+                                when {
+                                    jsonObject.has("message") -> {
+                                        requestProcessor.onError(jsonObject.getString("message"))
+
+                                        if (!jsonObject.getString("message").equals("Data not found", true))
+                                            activity
+                                                .showNegativeAlerter(jsonObject.getString("message"))
+                                    }
+                                    else -> {
+                                        requestProcessor.onError(
+                                            activity.resources?.getString(R.string.some_error_occured)
+                                                ?: ""
+                                        )
+                                        activity.showNegativeAlerter(
+                                            activity.resources?.getString(R.string.some_error_occured)
+                                                ?: ""
+                                        )
+                                    }
+                                }
                             }
-                            else -> {
-                                requestProcessor.onError(
-                                    activity.resources?.getString(R.string.some_error_occured)
-                                        ?: ""
-                                )
-                                activity.showNegativeAlerter(
-                                    activity.resources?.getString(R.string.some_error_occured)
-                                        ?: ""
-                                )
-                            }
-                        }
                     }
                 }
             }

@@ -3,17 +3,19 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-   // id 'realm-android'
+    id 'kotlin-parcelize'
+//    id 'androidx.navigation.safeargs.kotlin'
+    // id 'realm-android'
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.template"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -49,31 +51,32 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.google.android.play:core-ktx:1.8.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
     //Hilt
-    implementation 'com.google.dagger:hilt-android:2.32-alpha'
+    implementation 'com.google.dagger:hilt-android:2.39.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    kapt 'com.google.dagger:hilt-android-compiler:2.32-alpha'
+    kapt 'com.google.dagger:hilt-android-compiler:2.38.1'
 
     //Hilt View model Lifecycle
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha03'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //lifecycle
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
     //DataBinding
     def life_versions = "1.1.1"
@@ -82,12 +85,12 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$life_versions"
     kapt 'com.android.databinding:compiler:3.2.0-alpha10'
 
-    implementation 'androidx.fragment:fragment-ktx:1.3.2'
-    implementation "androidx.activity:activity-ktx:1.2.2"
+    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+    implementation "androidx.activity:activity-ktx:1.4.0"
 
     //Kotlin CoRoutines
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -99,17 +102,29 @@ dependencies {
     implementation group: 'com.squareup.picasso', name: 'picasso', version: '2.71828'
 
     //Code Picker
-    implementation 'com.hbb20:ccp:2.4.5'
+    implementation 'com.hbb20:ccp:2.5.4'
 
     //Dimensions
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
     //dataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     //otp
     implementation 'com.github.rajputmukesh748:MukeshOtpView:1.0.0'
 
     //Circle Image View
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //Dexter
+    implementation 'com.karumi:dexter:6.2.3'
+
+    //Image and Video Picker
+    implementation 'com.github.AnilFurkanOkcun:UWMediaPicker-Android:1.3.2'
+
+    //Sockets
+    implementation 'com.github.nkzawa:socket.io-client:0.6.0'
+}
+kapt {
+    correctErrorTypes true
 }

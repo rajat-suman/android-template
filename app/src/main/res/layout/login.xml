@@ -5,12 +5,13 @@
     <data>
 
         <variable
-            name="vm"
+            name="model"
             type="com.template.views.login.LoginVM" />
     </data>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:overScrollMode="never"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,7 +90,7 @@
                     android:fontFamily="@font/poppins_regular"
                     android:hint="@string/your_email"
                     android:inputType="text"
-                    android:text="@={vm.username}"
+                    android:text="@={model.username}"
                     android:textColor="@color/_acacac"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -128,7 +129,7 @@
                     android:fontFamily="@font/poppins_regular"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:text="@={vm.password}"
+                    android:text="@={model.password}"
                     android:textColor="@color/_acacac"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -151,7 +152,7 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:letterSpacing="0.02"
                 android:lineSpacingExtra="7sp"
-                android:onClick="@{vm::onClick}"
+                android:onClick="@{model::onClick}"
                 android:padding="@dimen/_5sdp"
                 android:text="@string/forgot_password"
                 android:textColor="@color/_7cb0e1"
@@ -171,7 +172,7 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:letterSpacing="0.02"
                 android:lineSpacingExtra="7sp"
-                android:onClick="@{vm::onClick}"
+                android:onClick="@{model::onClick}"
                 android:padding="@dimen/_5sdp"
                 android:text="@string/signin"
                 android:textAllCaps="false"
@@ -238,7 +239,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:letterSpacing="0.02"
                 android:lineSpacingExtra="7sp"
-                android:onClick="@{vm::onClick}"
+                android:onClick="@{model::onClick}"
                 android:text="@string/don_apos_t_have_an_account_sign_up"
                 android:textColor="#afafaf"
                 android:textSize="14sp"

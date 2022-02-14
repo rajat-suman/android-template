@@ -31,4 +31,13 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!--    For Show Dialog in Full Screen-->
+    <style name="DialogFullScreen">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
 </resources>

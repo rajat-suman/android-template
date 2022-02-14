@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:weightSum="3">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvImage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="15dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4sp"
+            android:paddingVertical="12dp"
+            android:text="@string/take_image"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:drawableTopCompat="@drawable/ic_camera_filled" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="15dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4sp"
+            android:paddingVertical="12dp"
+            android:text="@string/recordVideo"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:drawableTopCompat="@drawable/ic_camera_filled" />
+
+        <LinearLayout
+            android:id="@+id/tvGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_video"
+                android:backgroundTint="@color/app_color"
+                android:fontFamily="@font/poppins_regular"
+                android:padding="18dp"
+                android:src="@drawable/ic_picture"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="17dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/gallery"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

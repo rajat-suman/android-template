@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.template.datastore.DataStoreUtil
 import com.template.networkcalls.Repository
 import com.template.pref.PreferenceFile
+import com.template.utils.showConfirmDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -45,7 +46,6 @@ class MainVM @Inject constructor(
                 MainActivity.navListener?.openDrawer()
             }
             R.id.tvLogout -> {
-                MainActivity.navListener?.openDrawer()
                 showLogout(view)
             }
             R.id.tvSupport -> {
@@ -55,24 +55,10 @@ class MainVM @Inject constructor(
     }
 
     private fun showLogout(view: View) {
-        val aD = android.app.AlertDialog.Builder(view.context)
-        aD.setTitle(view.context.getString(R.string.are_your_sure_want_to_logout))
-        aD.setCancelable(false)
-        aD.setPositiveButton(view.context.getString(R.string.ok)) { dialogInterface, i ->
-            dialogInterface.cancel()
-            dialogInterface.dismiss()
-            val bundle = Bundle().apply {
-                putBoolean("isLogout", true)
-            }
+        view.showConfirmDialog(view.context.getString(R.string.are_your_sure_want_to_logout)){
             navController.popBackStack(R.id.dignity_driver, true)
-            navController.navigate(R.id.login, bundle)
+            navController.navigate(R.id.login)
         }
-        aD.setNegativeButton(view.context.getString(R.string.cancel)) { dialogInterface, i ->
-            dialogInterface.cancel()
-            dialogInterface.dismiss()
-        }
-        aD.create()
-        aD.show()
     }
 
 }

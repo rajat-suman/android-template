@@ -34,7 +34,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(tokenAuthenticator: TokenAuthenticator): OkHttpClient =
+    fun provideOkHttpClient(): OkHttpClient =
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -51,7 +51,7 @@ class NetworkModule {
                       chain.proceed(request)
                   }*/
                 .addInterceptor(loggingInterceptor)
-                .authenticator(tokenAuthenticator)
+//                .authenticator(tokenAuthenticator)
                 .build()
         } else {
             OkHttpClient

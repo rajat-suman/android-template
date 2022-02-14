@@ -1,5 +1,6 @@
 package com.template.utils
 
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.mukesh.mukeshotpview.completeListener.MukeshOtpCompleteListener
 import com.mukesh.mukeshotpview.mukeshOtpView.MukeshOtpView
 import com.squareup.picasso.Picasso
@@ -15,23 +17,17 @@ import com.squareup.picasso.Picasso
 /** Binding Adapters */
 object BindingAdapters {
 
-    @BindingAdapter(value = ["setRecyclerAdapter"], requireAll = false)
+    @BindingAdapter(value = ["setRecyclerAdapter", "addScrollListener"], requireAll = false)
     @JvmStatic
     fun setRecyclerAdapter(
         recyclerView: RecyclerView,
-        adapter: RecyclerView.Adapter<*>
+        adapter: RecyclerView.Adapter<*>,
+        listener: RecyclerView.OnScrollListener?=null
     ) {
         recyclerView.adapter = adapter
-    }
-
-
-    @BindingAdapter(value = ["addScrollListener"], requireAll = false)
-    @JvmStatic
-    fun addScrollListener(
-        recyclerView: RecyclerView,
-        listener: RecyclerView.OnScrollListener
-    ) {
-        recyclerView.addOnScrollListener(listener)
+        listener?.let {
+            recyclerView.addOnScrollListener(listener)
+        }
     }
 
     @BindingAdapter(value = ["otpListener"], requireAll = false)
@@ -41,15 +37,6 @@ object BindingAdapters {
         listener: MukeshOtpCompleteListener
     ) {
         otpView.setOtpCompletionListener(listener)
-    }
-
-    @BindingAdapter(value = ["bottomNavigationListener"], requireAll = false)
-    @JvmStatic
-    fun bottomNavigationListener(
-        bottomNavigationView: BottomNavigationView,
-        listener: BottomNavigationView.OnNavigationItemSelectedListener
-    ) {
-        bottomNavigationView.setOnNavigationItemSelectedListener(listener)
     }
 
     @BindingAdapter(value = ["setColorOfText"], requireAll = false)
@@ -81,7 +68,6 @@ object BindingAdapters {
             url?.startsWith("/storage")!! -> Picasso.get().load(url).into(imageView)
             else -> Picasso.get().load(url).into(imageView)
         }
-
     }
 
     @BindingAdapter(value = ["setDrawable"], requireAll = false)
@@ -118,5 +104,18 @@ object BindingAdapters {
         listener: TextWatcher
     ) {
         view.addTextChangedListener(listener)
+    }
+
+    @BindingAdapter(value = ["digitsBeforePoint", "digitsAfterPoint"], requireAll = false)
+    fun EditText.setDecimalFilter(
+        digitsBeforePoint: Int,
+        digitsAfterPoint: Int,
+    ) {
+        try {
+            this.filters =
+                arrayOf<InputFilter>(DecimalDigitsInputFilter(digitsBeforePoint, digitsAfterPoint))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

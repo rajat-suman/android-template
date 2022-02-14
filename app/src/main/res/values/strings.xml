@@ -31,4 +31,38 @@
     <string name="logged_in_successfully">Logged in successfully.</string>
     <string name="enter_email_or_phone">Please enter email adress</string>
     <string name="enter_valid_email_or_password">Please enter valid email address</string>
+
+
+    <string name="camera_permission_required">Camera and Storage permission is required to use this feature.</string>
+    <string name="location_permission_required">Location permission is required to use this feature</string>
+    <string name="storage_permission_required">Storage Permission is required to use this feature</string>
+    <string name="take_image">Take Image</string>
+    <string name="gallery">Gallery</string>
+    <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>
+    <string name="you_are_blocked">You have blocked by another user</string>
+    <string name="you_blocked">This user is blocked by you</string>
+    <string name="trimming_progress">Processing</string>
+    <string name="short_seconds">Sec</string>
+    <string name="megabyte">MB</string>
+    <string name="kilobyte">KB</string>
+    <string name="recordVideo">Record Video</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="adjust_range_within_100">Adjust range within 100%</string>
+    <string name="save">Save</string>
+    <string name="sure_delete">Are you sure? You want to delete.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="see_less">See less</string>
+    <string name="dot_dot_see_more">See More...</string>
+
+
+    <string-array name="number_count_suffix">
+        <item> </item>
+        <item>K</item>
+        <item>M</item>
+        <item>B</item>
+        <item>T</item>
+        <item>P</item>
+        <item>E</item>
+    </string-array>
 </resources>

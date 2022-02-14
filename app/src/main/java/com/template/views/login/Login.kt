@@ -17,7 +17,7 @@ class Login : Fragment(R.layout.login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = LoginBinding.bind(view)
-        binding.vm = viewModel
+        binding.model = viewModel
     }
 
 }
