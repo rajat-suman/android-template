@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationListener {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.drawerLayout.setScrimColor(Color.TRANSPARENT)
-        mainVM.navController = findNavController(R.id.fragmentMain)
+        mainVM.navController = findNavController(R.id.mainContainer)
         binding.vm = mainVM
         checkUpdate()
         setListeners()

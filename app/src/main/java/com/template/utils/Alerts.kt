@@ -1,6 +1,6 @@
 package com.template.utils
 
-
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -10,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.navigation.findNavController
+import com.template.MainActivity
 import com.template.R
-import com.template.databinding.AlertLayoutBinding
-import com.template.databinding.ConfirmAlertBinding
-import com.template.databinding.ProgressLayoutBinding
+import com.template.databinding.*
+import com.template.pref.PreferenceFile
+import com.template.sockethelper.SocketHelper
 
 fun View.showAlertFullScreen(
     @LayoutRes layout: Int,
@@ -49,6 +51,7 @@ fun View.showConfirmDialog(message:String, data:()->Unit){
         }
     }
 }
+var dialog:Dialog?=null
 fun View.showAlertWrap(
     @LayoutRes layout: Int,
     cancelable: Boolean = false,
@@ -56,47 +59,52 @@ fun View.showAlertWrap(
     viewSend: (View, Dialog) -> Unit
 ) {
     try {
-        val dialog = Dialog(this.context)
+        dialog?.dismiss()
+        dialog = Dialog(this.context)
         val view = LayoutInflater.from(this.context).inflate(layout, null)
-        dialog.setContentView(view)
-        dialog.setCancelable(cancelable)
-        dialog.setCanceledOnTouchOutside(cancelableOnTouchOutside)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        viewSend(view, dialog)
-        dialog.show()
+        dialog?.let {dialog->
+            dialog.setContentView(view)
+            dialog.setCancelable(cancelable)
+            dialog.setCanceledOnTouchOutside(cancelableOnTouchOutside)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            viewSend(view, dialog)
+            dialog.show()
+        }
+
     } catch (e: Exception) {
         e.printStackTrace()
     }
 }
-//ErrorAlert
 
-fun Context.alert(message: String) {
-    try {
-        val builder = AlertDialog.Builder(this)
-        val layoutView = AlertLayoutBinding.inflate(LayoutInflater.from(this), null, false)
-        builder.setCancelable(false)
-        builder.setView(layoutView.root)
-        val dialog = builder.create()
 
-        layoutView.tvMessage.text = message
-        layoutView.tvOkButton.setOnClickListener {
-            dialog.dismiss()
+/**Session Expired Alert*/
+
+fun Context.sessionExpired(preferenceFile: PreferenceFile) = try {
+    (this as MainActivity).binding?.root?.let {view->
+        view.showAlertWrap(
+            R.layout.common_alert,
+            cancelable=false, cancelableOnTouchOutside = false
+        ) { view2, dialog ->
+            val binding = CommonAlertBinding.bind(view2)
+            binding.tvTerms.text = getString(R.string.session_expired)
+            binding.btnConfirm.setOnClickListener {
+                dialog.dismiss()
+                preferenceFile.clearPreference()
+                SocketHelper.disconnectSocket()
+                (this as Activity).findNavController(R.id.mainContainer).popBackStack(R.id.navGraph, true)
+                this.findNavController(R.id.mainContainer).navigate(R.id.login)
+            }
         }
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.show()
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
+} catch (e: Exception) {
+    e.printStackTrace()
 }
 
 //Loader
-
 private var customDialog: AlertDialog? = null
 
 fun Context.showProgress() {
@@ -121,21 +129,5 @@ fun hideProgress() {
         e.printStackTrace()
     }
 }
-
-/**Session Expired Alert*/
-var sessionExpired:AlertDialog?=null
-fun Context.sessionExpired() = try {
-    sessionExpired?.dismiss()
-    val aD = AlertDialog.Builder(this)
-    aD.setTitle(getString(R.string.session_expired))
-    aD.setCancelable(false)
-    aD.setPositiveButton(getString(R.string.ok)) { dialogInterface, i ->
-
-    }
-    sessionExpired=  aD.create()
-    aD.show()
-} catch (e: Exception) {
-    e.printStackTrace()
-}!!
 
 

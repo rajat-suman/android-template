@@ -6,6 +6,6 @@ interface ApiProcessor<T> {
 
     fun onResponse(res: T)
 
-    fun onError(message: String) {}
+    fun onError(message: String, responseCode:Int) {}
 
 }

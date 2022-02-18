@@ -56,7 +56,7 @@ class MainVM @Inject constructor(
 
     private fun showLogout(view: View) {
         view.showConfirmDialog(view.context.getString(R.string.are_your_sure_want_to_logout)){
-            navController.popBackStack(R.id.dignity_driver, true)
+            navController.popBackStack(R.id.navGraph, true)
             navController.navigate(R.id.login)
         }
     }

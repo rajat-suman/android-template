@@ -5,6 +5,8 @@ import android.util.Log
 import com.template.MainActivity
 import com.template.R
 import com.template.datastore.DataStoreUtil
+import com.template.pref.PreferenceFile
+import com.template.pref.token
 import com.template.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,110 +19,175 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val retrofitApi: RetrofitApi,
-    private val cacheUtil: CacheUtil,
-    private val dataStoreUtil: DataStoreUtil
+    private val cacheUtil: CacheUtil<String, Response<Any>>,
+    private val dataStoreUtil: DataStoreUtil,
+    private val preferenceFile: PreferenceFile
 ) {
     fun <T> makeCall(
         apiKey: ApiEnums,
         loader: Boolean,
         saveInCache: Boolean,
+        requestProcessor: ApiProcessor<Response<T>>,
+        getFromCache: Boolean = false
+    ) {
+        if (getFromCache)
+            cacheUtil[apiKey.name + preferenceFile.retrieveKey(token)]?.let {
+                requestProcessor.onResponse(it as Response<T>)
+            } ?: getResponseFromCall(apiKey, loader, saveInCache, requestProcessor)
+        else
+            getResponseFromCall(apiKey, loader, saveInCache, requestProcessor)
+    }
+
+    private fun <T> getResponseFromCall(
+        apiKey: ApiEnums,
+        loader: Boolean,
+        saveInCache: Boolean,
         requestProcessor: ApiProcessor<Response<T>>
     ) {
-        val activity = MainActivity.context.get()!!
-        if (cacheUtil.snapshot().containsKey(apiKey)) {
-            Log.d("cacheUtil", "========${cacheUtil[apiKey]}")
-            requestProcessor.onResponse(cacheUtil[apiKey] as Response<T>)
-            return
-        }
-        if (!activity.isNetworkAvailable()) {
-            activity.showNegativeAlerter(activity.getString(R.string.your_device_offline))
-            return
-        }
+        try {
+            val activity = MainActivity.context.get()
 
-        if (loader) {
-            activity.showProgress()
-        }
+            activity?.let {
+                if (!activity.isNetworkAvailable()) {
+                    activity.showNegativeAlerter(activity.getString(R.string.your_device_offline))
+                    return
+                }
+                if (loader) {
+                    activity.showProgress()
+                }
+            }
 
-        val dataResponse: Flow<Response<T>> = flow {
-            val response =
-                requestProcessor.sendRequest(retrofitApi)
-            emit(response)
-        }.flowOn(Dispatchers.IO)
+            val dataResponse: Flow<Response<Any>> = flow {
+                val response =
+                    requestProcessor.sendRequest(retrofitApi) as Response<Any>
+                emit(response)
+            }.flowOn(Dispatchers.IO)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            dataResponse.catch { exception ->
-                exception.printStackTrace()
-                hideProgress()
-                activity.showNegativeAlerter(exception.message ?: "")
-            }.collect { response ->
-                Log.d("resCodeIs", "====${response.code()}")
-                hideProgress()
-                when {
-                    response.code() in 100..199 -> {
-                        /**Informational*/
-                        requestProcessor.onError(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                        activity.showNegativeAlerter(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
+            CoroutineScope(Dispatchers.Main).launch {
+                dataResponse.catch { exception ->
+                    exception.printStackTrace()
+                    hideProgress()
+                    activity?.let {
+                        activity.showNegativeAlerter(exception.message ?: "")
                     }
-                    response.isSuccessful -> {
-                        /**Success*/
-                        if (saveInCache)
-                            cacheUtil.put(apiKey, response as Response<Any>)
-                        requestProcessor.onResponse(response )
-                    }
-                    response.code() in 300..399 -> {
-                        /**Redirection*/
-                        requestProcessor.onError(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                        activity.showNegativeAlerter(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                    }
-                    response.code() == 401 -> {
-                        /**UnAuthorized*/
-                        getRefreshToken()
-                        activity.sessionExpired()
-                        requestProcessor.onError("unAuthorized")
-                    }
-                    response.code() == 404 -> {
-                        /**Page Not Found*/
-                        requestProcessor.onError(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                        activity.showNegativeAlerter(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                    }
-                    response.code() in 500..599 -> {
-                        /**ServerErrors*/
-                        requestProcessor.onError(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                        activity.showNegativeAlerter(
-                            activity.resources?.getString(R.string.some_error_occured) ?: ""
-                        )
-                    }
-                    else -> {
-                        /**ClientErrors*/
-                            response.errorBody()?.string()?.let {res->
+                }.collect { response ->
+                    Log.d("resCodeIs", "====${response.code()}")
+                    hideProgress()
+                    when {
+                        response.code() in 100..199 -> {
+                            /**Informational*/
+                            activity?.let {
+                                requestProcessor.onError(
+                                    activity.resources?.getString(R.string.some_error_occured)
+                                        ?: "",
+                                    response.code()
+                                )
+                                activity.showNegativeAlerter(
+                                    activity.resources?.getString(R.string.some_error_occured) ?: ""
+                                )
+                            }
 
-                                val jsonObject = JSONObject(res)
-                                when {
-                                    jsonObject.has("message") -> {
-                                        requestProcessor.onError(jsonObject.getString("message"))
+                        }
+                        response.isSuccessful -> {
+                            /**Success*/
+                            Log.d("successBody", "====${response.body()}")
+                            if (saveInCache)
+                                cacheUtil.put(
+                                    apiKey.name + preferenceFile.retrieveKey(token),
+                                    response
+                                )
+                            requestProcessor.onResponse(response as Response<T>)
+                        }
+                        response.code() in 300..399 -> {
+                            /**Redirection*/
+                            activity?.let {
+                                requestProcessor.onError(
+                                    activity.resources?.getString(R.string.some_error_occured)
+                                        ?: "",
+                                    response.code()
+                                )
+                                activity.showNegativeAlerter(
+                                    activity.resources?.getString(R.string.some_error_occured) ?: ""
+                                )
+                            }
+                        }
+                        response.code() == 401 -> {
+                            /**UnAuthorized*/
+                            activity?.let {
+                                activity.sessionExpired(preferenceFile)
+                                requestProcessor.onError("unAuthorized", response.code())
+                            }
 
-                                        if (!jsonObject.getString("message").equals("Data not found", true))
+                        }
+                        response.code() == 404 -> {
+                            /**Page Not Found*/
+                            activity?.let {
+                                requestProcessor.onError(
+                                    activity.resources?.getString(R.string.some_error_occured)
+                                        ?: "",
+                                    response.code()
+                                )
+                                activity.showNegativeAlerter(
+                                    activity.resources?.getString(R.string.some_error_occured) ?: ""
+                                )
+                            }
+                        }
+                        response.code() in 500..599 -> {
+                            /**ServerErrors*/
+                            activity?.let {
+                                requestProcessor.onError(
+                                    activity.resources?.getString(R.string.some_error_occured)
+                                        ?: "",
+                                    response.code()
+                                )
+                                activity.showNegativeAlerter(
+                                    activity.resources?.getString(R.string.some_error_occured) ?: ""
+                                )
+                            }
+                        }
+                        else -> {
+                            /**ClientErrors*/
+                            val res = response.errorBody()!!.string()
+                            val jsonObject = JSONObject(res)
+                            when {
+                                jsonObject.has("message") -> {
+                                    Log.e(
+                                        "Repository",
+                                        "makeCall: ${jsonObject.getString("message")}"
+                                    )
+                                    requestProcessor.onError(
+                                        jsonObject.getString("message"),
+                                        response.code()
+                                    )
+
+                                    if (!jsonObject.getString("message")
+                                            .equals("Data not found", true)
+                                    )
+                                        activity?.let {
                                             activity
                                                 .showNegativeAlerter(jsonObject.getString("message"))
-                                    }
-                                    else -> {
+                                        }
+                                }
+                                jsonObject.has("error") -> {
+                                    val message =
+                                        jsonObject.getJSONObject("error").getString("text") ?: ""
+                                    Log.e("Repository", "makeCall: ${message}")
+                                    requestProcessor.onError(
+                                        message,
+                                        response.code()
+                                    )
+
+                                    if (!message.equals("Data not found", true))
+                                        activity?.let {
+                                            activity
+                                                .showNegativeAlerter(message)
+                                        }
+                                }
+                                else -> {
+                                    activity?.let {
                                         requestProcessor.onError(
                                             activity.resources?.getString(R.string.some_error_occured)
-                                                ?: ""
+                                                ?: "", response.code()
                                         )
                                         activity.showNegativeAlerter(
                                             activity.resources?.getString(R.string.some_error_occured)
@@ -129,14 +196,13 @@ class Repository @Inject constructor(
                                     }
                                 }
                             }
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-    }
-
-    private fun getRefreshToken() {
-
     }
 
 }

@@ -1,7 +1,7 @@
 package com.template.networkcalls
 
-import androidx.databinding.library.BuildConfig
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.template.BuildConfig
 import com.template.utils.hideProgress
 import dagger.Module
 import dagger.Provides
@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -24,40 +25,26 @@ import javax.inject.Singleton
 class NetworkModule {
 
     @Provides
-    fun cacheUtil() = CacheUtil()
+    @Singleton
+    fun cacheUtil() = CacheUtil<String, Response<Any>>()
 
     @Provides
-    fun provideBaseUrl() = BASE_URL
+    fun provideBaseUrl() = BuildConfig.BASE_URL
 
     @Provides
     fun tokenAuthenticator() = TokenAuthenticator()
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient =
-        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            OkHttpClient.Builder()
-                .readTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                /*  .addInterceptor { chain ->
-                      val original = chain.request()
-                      val request = original.newBuilder()
-                          .header("Authorization", "token")
-                          .header("lang", "ENGLISH")
-                          //                    .method(original.method, original.body)
-                          .build()
-                      chain.proceed(request)
-                  }*/
-                .addInterceptor(loggingInterceptor)
-//                .authenticator(tokenAuthenticator)
-                .build()
-        } else {
-            OkHttpClient
-                .Builder()
-                .build()
-        }
+    fun provideOkHttpClient(): OkHttpClient  {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient . Builder ()
+            .readTimeout(3, TimeUnit.MINUTES)
+            .connectTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
 
     @Singleton
     @Provides

@@ -8,7 +8,7 @@ import com.template.sockethelper.SocketKeys.SYNC_DATA
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
-import com.template.networkcalls.SOCKET_BASE_URL
+import com.template.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,10 +75,9 @@ object SocketHelper {
             options.reconnection = true
             options.reconnectionAttempts = Int.MAX_VALUE
             options.reconnectionDelay = 1000
-//            options.transports = arrayOf(WebSocket.NAME, PollingXHR.NAME)
             options.query = "token=$token"
 //            options.path= "/v2/socket.io"
-            socket = IO.socket(SOCKET_BASE_URL, options)
+            socket = IO.socket(BuildConfig.SOCKET_BASE_URL, options)
             socketOn()
         }
         if(token.isNotBlank())

@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/layout/activity_trimmer.xml" value="0.34739583333333335" />
         <entry key="app/src/main/res/layout/alert_layout.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/layout/common_alert.xml" value="0.35885416666666664" />
         <entry key="app/src/main/res/layout/confirm_alert.xml" value="0.34739583333333335" />
         <entry key="app/src/main/res/layout/item_chooser.xml" value="0.34739583333333335" />
         <entry key="app/src/main/res/layout/login.xml" value="0.19427083333333334" />
