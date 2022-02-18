@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
+import com.template.MainActivity
 
 /**
  * Navigate using destination ID
@@ -27,7 +28,8 @@ fun View.navigateWithAction(action: NavDirections) = try {
  * Navigate to previous screen
  * */
 fun View.navigateBack() = try {
-    this.findNavController().navigateUp()
+    (MainActivity.context.get() as MainActivity).onBackPressed()
+//    this.findNavController().navigateUp()
 } catch (e: Exception) {
     e.printStackTrace()
 }

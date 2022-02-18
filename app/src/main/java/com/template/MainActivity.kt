@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context = WeakReference(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.drawerLayout.setScrimColor(Color.TRANSPARENT)
         mainVM.navController = findNavController(R.id.mainContainer)
@@ -150,7 +151,6 @@ class MainActivity : AppCompatActivity(), NavigationListener {
 
     /***
      * If want to LockDrawer
-     *
      * */
     override fun isLockDrawer(isLock: Boolean) {
         if (isLock)

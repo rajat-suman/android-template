@@ -87,7 +87,6 @@ fun Context.showNegativeAlerter(message: String) {
         message,
         Snackbar.LENGTH_SHORT
     ).show()
-
 }
 
 /** Negative Alerter*/

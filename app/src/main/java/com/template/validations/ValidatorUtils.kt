@@ -1,6 +1,7 @@
 package com.template.validations
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import java.util.regex.Matcher
@@ -10,12 +11,10 @@ object ValidatorUtils {
 
     //PasswordValidator
     fun validPassword(password: String): Boolean {
-        val pattern: Pattern
-        val matcher: Matcher
-        val PASSWORD_PATTERN =
+        val passwordPattern =
             "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@*#$%^&+=!])(?=\\S+$).{4,}$"
-        pattern = Pattern.compile(PASSWORD_PATTERN)
-        matcher = pattern.matcher(password)
+        val pattern: Pattern = Pattern.compile(passwordPattern)
+        val matcher: Matcher = pattern.matcher(password)
         return matcher.matches()
     }
 
@@ -55,5 +54,12 @@ object ValidatorUtils {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    fun hideSoftKeyboard(mContext: Context, view: View) {
+        view.isFocusable = false
+        view.isFocusableInTouchMode = true
+        val imm =
+            mContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
 }

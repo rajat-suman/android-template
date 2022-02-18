@@ -17,14 +17,10 @@ import androidx.fragment.app.Fragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.anilokcun.uwmediapicker.model.UwMediaPickerMediaModel
 import com.anilokcun.uwmediapicker.model.UwMediaPickerMediaType
-/*import com.apptunix.expedate.R
-import com.apptunix.expedate.databinding.ItemChooserBinding
-import com.apptunix.expedate.videotrimmer.TrimmerActivity
-import com.apptunix.expedate.videotrimmer.utils.FileUtils.getPath*/
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.template.R
 import com.template.databinding.ItemChooserBinding
-import com.template.utils.alert
+import com.template.utils.showNegativeAlerter
 import com.template.videotrimmer.TrimmerActivity
 import com.template.videotrimmer.utils.FileUtils.getPath
 import java.io.File
@@ -176,7 +172,7 @@ class CameraBottomSheet(
                 onImageSelected?.onImageSelected(selectedMediaList[0].mediaPath)
             }
         } else
-            requireContext().alert(message =  activity.requireContext().getString(R.string.unexpected_error))
+            requireActivity().showNegativeAlerter(message =  activity.requireContext().getString(R.string.unexpected_error))
 
     }
 
