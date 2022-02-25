@@ -8,6 +8,9 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class AppController : Application(), Application.ActivityLifecycleCallbacks {
+    companion object{
+        var auth:String?=null
+    }
     override fun onCreate() {
         super.onCreate()
         Log.d("hvdfdvhj", "ujdschdfvb")

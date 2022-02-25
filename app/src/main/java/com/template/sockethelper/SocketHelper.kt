@@ -14,100 +14,69 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-object SocketHelper {
 
-    var socket: Socket? = null
-    var token=""
-    var globalListeners: GlobalListeners? = null
-    var currentLat :Double?=null
-    var currentLong :Double?=null
-    private val onConnect = Emitter.Listener {
-        Log.e("SocketConnection", "======>>>>>>>>  Connected ")
-    }
+import com.google.gson.Gson
+import com.template.sockethelper.SocketKeys.NEW_BOOKING_REQUEST
+import com.template.utils.AppController
 
-    private val onDisconnect = Emitter.Listener {
-        Log.e("SocketConnection", "======>>>>>>>>  Disconnected ${it[0]}")
-        initSocket()
-    }
+class SocketHelper {
 
-    private val onConnectError = Emitter.Listener { it ->
-        Log.e("onConnectError", "======>>>>>>>> onConnectError ${it[0]}")
-        initSocket()
-    }
-
-    private val onConnectTimeout = Emitter.Listener { ds ->
-        Log.e("timeOut", "======>>>>>>>> ${ds[0]}")
-        initSocket()
-    }
-
-    private var syncData= Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.e("SocketHelper", "addListeners: $SYNC_DATA = ${it[0]}")
-            globalListeners?.onSyncData(JSONObject(it[0].toString()))
-        }
-    }
-    private var onStatusChange= Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.e("SocketHelper", "addListeners: $BOOKING_STATUS_CHANGE = ${it[0]}")
-            try {
-                val booking = JSONObject(it[0].toString())
-                globalListeners?.onBookingStatusChange(booking)
-            }catch (e:Exception){
-                e.printStackTrace()
+    // For Singleton instantiation
+    companion object {
+        @Volatile
+        private var instance: SocketHelper? = null
+        fun getInstance(): SocketHelper {
+            return instance ?: synchronized(this) {
+                instance ?: buildSocket().also { instance = it }
             }
         }
-    }
-    private var onCancel= Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.e("SocketHelper", "addListeners: $BOOKING_CANCEL_ALERT = ${it[0]}")
-            globalListeners?.onBookingCancelAlert(JSONObject(it[0].toString()))
+        private fun buildSocket(): SocketHelper {
+            return SocketHelper()
         }
-    }
-    private var logout= Emitter.Listener {
-        CoroutineScope(Dispatchers.Main).launch {
-            globalListeners?.onSessionEnd()
-        }
+
     }
 
+    @Volatile
+    var socket: Socket? = null
+
+    @Volatile
+    var globalListeners: GlobalListeners? = null
+
+    @Synchronized
     fun initSocket() {
-        if (socket == null) {
+        if (socket == null && !AppController.auth.isNullOrBlank()) {
             val options = IO.Options()
             options.reconnection = true
             options.reconnectionAttempts = Int.MAX_VALUE
             options.reconnectionDelay = 1000
-            options.query = "token=$token"
+            options.forceNew = true
+            options.query = "token=${AppController.auth}"
+//            if(!BuildConfig.DEBUG)
 //            options.path= "/v2/socket.io"
             socket = IO.socket(BuildConfig.SOCKET_BASE_URL, options)
             socketOn()
         }
-        if(token.isNotBlank())
         socket?.let {
-            if (!it.connected() )
+            if (!it.connected())
                 it.connect()
         }
     }
 
-    fun addListeners() {
-        try {
-            listener(SYNC_DATA, syncData)
-            listener(BOOKING_STATUS_CHANGE, onStatusChange)
-            listener(BOOKING_CANCEL_ALERT, onCancel)
-            listener(LOGOUT,  logout)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
+    @Synchronized
     private fun socketOn() {
         listener(Socket.EVENT_CONNECT, onConnect)
         listener(Socket.EVENT_DISCONNECT, onDisconnect)
         listener(Socket.EVENT_CONNECT_ERROR, onConnectError)
+        listener(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
+        listener(Socket.EVENT_ERROR, onConnectError)
+        listener(Socket.EVENT_RECONNECT_FAILED, onConnectError)
     }
 
+    @Synchronized
     fun disconnectSocket() {
         socket?.disconnect()
+        AppController.auth = null
         socket = null
-        token =""
     }
 
     fun listener(key: String, emitter: Emitter.Listener) {
@@ -118,7 +87,10 @@ object SocketHelper {
     }
 
     fun <T> emit(key: String, data: T) {
-        initSocket()
+        if (!isConnected()) {
+            initSocket()
+            return
+        }
         Log.e("SocketHelper", "emit: $key = $data")
         socket?.emit(key, data)
     }
@@ -127,6 +99,17 @@ object SocketHelper {
         return socket?.connected() == true
     }
 
+    fun addListeners() {
+        try {
+            listener(SYNC_DATA, syncData)
+            listener(NEW_BOOKING_REQUEST, newBooking)
+            listener(BOOKING_STATUS_CHANGE, onStatusChange)
+            listener(BOOKING_CANCEL_ALERT, onCancel)
+            listener(LOGOUT, logout)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     interface GlobalListeners {
         fun onSyncData(syncData: Any)
@@ -136,14 +119,71 @@ object SocketHelper {
         fun onSessionEnd()
     }
 
-    fun setAuth(auth: String? = null) {
-        try {
-            token = auth?:""
-            initSocket()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private val onConnect = Emitter.Listener {
+        Log.e("SocketConnection", "======>>>>>>>>  Connected ")
+        initSocket()
+    }
+    private val onDisconnect = Emitter.Listener {
+        Log.e("SocketConnection", "======>>>>>>>>  Disconnected ${it[0]}")
+        initSocket()
+    }
+    private val onConnectError = Emitter.Listener { it ->
+        Log.e("onConnectError", "======>>>>>>>> onConnectError ${it[0]}")
+        initSocket()
+    }
+    private var syncData = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                Log.e("SocketHelper", "addListeners: $SYNC_DATA = ${it[0]}")
+                globalListeners?.onSyncData(JSONObject(it[0].toString()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
     }
+    private var newBooking = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                Log.e("SocketHelper", "addListeners: $NEW_BOOKING_REQUEST = ${it[0]}")
+                globalListeners?.onNewBooking(JSONObject(it[0].toString()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
+        }
+    }
+    private var onStatusChange = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                Log.e("SocketHelper", "addListeners: $BOOKING_STATUS_CHANGE = ${it[0]}")
+                globalListeners?.onBookingStatusChange(JSONObject(it[0].toString()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+    private var onCancel = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                Log.e("SocketHelper", "addListeners: $BOOKING_CANCEL_ALERT = ${it[0]}")
+                globalListeners?.onBookingCancelAlert(JSONObject(it[0].toString()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+    private var logout = Emitter.Listener {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                globalListeners?.onSessionEnd()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
 
 }
